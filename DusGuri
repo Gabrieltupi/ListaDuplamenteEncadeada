@@ -1,0 +1,199 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct aluno{
+    char nome[20];
+    float nota;
+    int turma;
+    struct aluno* prox;
+    struct aluno* ant;
+}Aluno;
+
+Aluno* iniciar(){
+    return NULL;
+}
+
+void inserir_i(Aluno** lista, char nome[], float nota, int turma){
+    Aluno* novoa=(Aluno*) malloc(sizeof(Aluno));
+    strcpy(novoa->nome, nome);
+    novoa->nota=nota;
+    novoa->turma=turma;
+    novoa->ant=NULL;
+    novoa->prox=(*lista);
+
+    if((*lista)!= NULL){
+        (*lista)->ant= novoa;
+    }
+    (*lista) =novoa;
+}
+
+
+
+
+void inserir_f(Aluno** lista, char nome[], float nota, int turma){
+    Aluno* novoa=(Aluno*) malloc(sizeof(Aluno));
+    strcpy(novoa->nome,nome);
+    novoa->nota=nota;
+    novoa->turma=turma;
+    novoa->prox=NULL;
+
+    if ((*lista)== NULL){
+        novoa->ant=NULL;
+        (*lista)=novoa;
+    }else{
+        Aluno* atual=(*lista);
+        while(atual->prox != NULL){
+            atual=atual->prox;
+        }
+        atual->prox= novoa;
+        novoa->ant =atual;
+    }
+}
+
+
+
+
+
+void excluir_m(Aluno** lista, char nome[]){
+
+    if ((*lista)==NULL){
+        printf("\tnada aqui\n");
+        return;
+    }
+    Aluno*atual=(*lista);
+    while(atual!= NULL && strcmp(atual->nome, nome)!=0){
+        atual = atual->prox;
+    }
+    if(atual==NULL){
+        printf("\tAluno nao nao esta de recuperacao\n");
+        return;
+    }
+    if(atual->ant==NULL){
+        (*lista)=atual->prox;
+    }else{
+        atual->ant->prox=atual->prox;
+    }
+    if(atual->prox !=NULL){
+        atual->prox->ant = atual->ant;
+    }
+    free(atual);
+}
+
+
+
+
+void imprimir(Aluno* lista) {
+    Aluno* atual = lista;
+
+    while (atual != NULL) {
+        printf("\tnome: %s\n \tnota: %.2f\n  \tturma: %d\n\n\n", atual->nome, atual->nota, atual->turma);
+        atual = atual->prox;
+    }
+    printf("\n\n");
+    while (lista != NULL && lista->prox != NULL) {
+        lista = lista->prox;
+    }
+    atual = lista;
+}
+
+
+
+
+
+void excluir_l(Aluno** lista) {
+    Aluno* atual = (*lista);
+    while (atual!= NULL){
+        Aluno* temp = atual;
+        atual=atual->prox;
+        free(temp);
+    }
+    (*lista)=NULL;
+}
+
+
+
+
+void imprimiri(Aluno* lista) {
+   if (lista != NULL) {
+      Aluno* atual = lista;
+      while (atual->prox != NULL) {
+         atual= atual->prox;
+      }
+      while (atual!= NULL) {
+         printf("\tnome: %s\n \tnota: %.2f\n  \tturma: %d\n\n\n", atual->nome, atual->nota, atual->turma);
+         atual= atual->ant;
+      }
+   }else{
+      printf("Lista vazia\n");
+    }
+}
+
+
+
+
+int main() {
+
+    Aluno* lista = iniciar();
+
+    int x, turma;
+    char nome[20];
+    float nota;
+
+    do {
+        printf("\tadicione os alunos que estão reprovados na lista de recuperacao.\n");
+        printf("\t________________________________________________________________\n");
+        printf("\t1. Inserir aluno no inicio\n");
+        printf("\t2. Inserir aluno no fim\n");
+        printf("\t3. Excluir aluno pelo nome\n");
+        printf("\t4. Imprimir lista\n");
+        printf("\t5. Excluir lista\n");
+        printf("\t6. imprimir ao contrario\n");
+        printf("\t7. sair");
+        printf("\t-----------------------------\n");
+        scanf("\t%d", &x);
+
+        switch (x) {
+            case 1:
+                printf("Digite o nome do aluno: ");
+                scanf("%s", nome);
+                printf("Digite a nota do aluno: ");
+                scanf("%f", &nota);
+                printf("Digite a turma do aluno: ");
+                scanf("%d", &turma);
+                printf("\n");
+                inserir_i(&lista, nome, nota, turma);
+                break;
+            case 2:
+                printf("Digite o nome do aluno: ");
+                scanf("%s", nome);
+                printf("Digite a nota do aluno: ");
+                scanf("%f", &nota);
+                printf("Digite a turma do aluno: ");
+                scanf("%d", &turma);
+                printf("\n");
+                inserir_f(&lista, nome, nota, turma);
+                break;
+            case 3:
+                printf("Digite o nome do aluno a ser excluido: ");
+                scanf("%s", nome);
+                excluir_m(&lista, nome);
+                break;
+            case 4:
+                imprimir(lista);
+                break;
+            case 5:
+                excluir_l(&lista);
+                break;
+            case 6:
+                imprimiri(lista);
+            case 7:
+                printf("tchau, ate  aproxima.\n");
+                break;
+                default:
+                printf("inexistente\n");
+                break;
+        }
+    } while (x!= 7);
+    return 0;
+}
